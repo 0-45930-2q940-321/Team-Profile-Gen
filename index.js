@@ -4,6 +4,8 @@ const Intern = require('./lib/Intern')
 const Manager = require('./lib/Manager');
 const makeHtml = require('./src/html-maker');
 
+let teamArray = [];
+
 const questions = [
     {
         type: 'text',
@@ -39,115 +41,113 @@ const questions = [
     }
 ];
 
-createEmployee = () => {
+askQuestions = () => {
+    inquirer
+        .prompt(questions).then(data => {
+            switch (data.role) {
+                case 'Engineer':
+                    const newEngineer = new Engineer(data.name, data.id, data.email, data.role, data.specificInfo);
+                    engineerQuest(newEngineer);
+                    break;
 
-    let employeeArray = [];
-    let newEmployee;
+                case 'Intern':
+                    const newIntern = new Intern(data.name, data.id, data.email, data.role, data.specificInfo);
+                    internQuest(newIntern);
+                    break;
 
-    const askQuestions = () => {
+                case 'Manager':
+                    const newManager = new Manager(data.name, data.id, data.email, data.role, data.specificInfo);
+                    managerQuest(newManager);
+                    break;
+            }
+        })
+}
 
-        inquirer.prompt(questions)
-            .then(data => {
+engineerQuest = newEngineer => {
+    inquirer
+        .prompt([
+            {
+                type: 'text',
+                name: 'specificInfo',
+                message: 'What is your Github user?'
+            },
+            {
+                type: 'confirm',
+                name: 'addEmployee',
+                message: 'Would you like to add another Employee?',
+                default: false,
+            }
+        ])
+        .then(engineerData => {
 
-                if (data.role === 'Engineer') {
+            newEngineer.specificInfo = engineerData.specificInfo
+            teamArray.push(newEngineer);
 
-                    newEmployee = new Engineer(data.name, data.id, data.email, data.role, data.specificInfo);
+            if (engineerData.addEmployee) {
+                askQuestions();
 
-                    inquirer
-                        .prompt([
-                            {
-                                type: 'text',
-                                name: 'specificInfo',
-                                message: 'What is your Github user?'
-                            },
-                            {
-                                type: 'confirm',
-                                name: 'addEmployee',
-                                message: 'Would you like to add another Employee?',
-                                default: false,
-                            }
-                        ])
-                        .then(employeeData => {
+            } else {
+                makeHtml(teamArray);
+            };
+        });
+}
 
-                            newEmployee.role = data.role
-                            newEmployee.specificInfo = employeeData.specificInfo;
-                            employeeArray.push(newEmployee);
+internQuest = newIntern => {
+    inquirer
+        .prompt([
+            {
+                type: 'text',
+                name: 'specificInfo',
+                message: 'What school is the Intern going to?'
+            },
+            {
+                type: 'confirm',
+                name: 'addEmployee',
+                message: 'Would you like to add another Employee?',
+                default: false,
+            }
+        ])
+        .then(internData => {
 
-                            if (employeeData.addEmployee) {
-                                askQuestions();
+            newIntern.specificInfo = internData.specificInfo
+            teamArray.push(newIntern);
 
-                            } else {
-                                makeHtml(employeeArray);
-                            };
-                        })
-                } else if (data.role === 'Intern') {
+            if (internData.addEmployee) {
+                askQuestions();
 
-                    newEmployee = new Intern(data.name, data.id, data.email, data.role, data.specificInfo);
-                    inquirer
-                        .prompt([
-                            {
-                                type: 'text',
-                                name: 'specificInfo',
-                                message: 'What school is the Intern going to?'
-                            },
-                            {
-                                type: 'confirm',
-                                name: 'addEmployee',
-                                message: 'Would you like to add another Employee?',
-                                default: false,
-                            }
-                        ])
-                        .then(employeeData => {
+            } else {
+                makeHtml(teamArray);
+            };
+        });
+}
 
-                            newEmployee.role = data.role
-                            newEmployee.specificInfo = employeeData.specificInfo
-                            employeeArray.push(newEmployee);
+managerQuest = newManager => {
+    inquirer
+        .prompt([
+            {
+                type: 'text',
+                name: 'specificInfo',
+                message: 'What is the Manager\'s office number?'
+            },
+            {
+                type: 'confirm',
+                name: 'addEmployee',
+                message: 'Would you like to add another Employee?',
+                default: false,
+            }
+        ])
+        .then(managerData => {
 
-                            if (employeeData.addEmployee) {
-                                askQuestions();
+            newManager.specificInfo = managerData.specificInfo
+            teamArray.push(newManager);
 
-                            } else {
-                                makeHtml(employeeArray);
-                            };
-                        })
-                } else if (data.role === 'Manager') {
+            if (managerData.addEmployee) {
+                askQuestions();
 
-                    newEmployee = new Manager(data.name, data.id, data.email, data.role, data.specificInfo)
-                    inquirer
-                        .prompt([
-                            {
-                                type: 'text',
-                                name: 'specificInfo',
-                                message: 'What is the Manager\'s office number?'
-                            },
-                            {
-                                type: 'confirm',
-                                name: 'addEmployee',
-                                message: 'Would you like to add another Employee?',
-                                default: false,
-                            }
-                        ])
-                        .then(employeeData => {
+            } else {
+                makeHtml(teamArray);
+            };
+        });
+}
 
-                            newEmployee.role = data.role
-                            newEmployee.specificInfo = employeeData.specificInfo
-                            employeeArray.push(newEmployee);
-
-                            if (employeeData.addEmployee) {
-                                askQuestions();
-
-                            } else {
-                                makeHtml(employeeArray);
-                            };
-                        });
-
-                } else {
-                    return false;
-                };
-                console.table(employeeArray)
-            })
-    }
-    askQuestions();
-};
-
-createEmployee();
+askQuestions();

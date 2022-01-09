@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-const makeHtml = (employeeArray) => {
+const makeHtml = (teamArray) => {
     let employeeHtml = '';
-
-    employeeArray.forEach(employee => {
+    //The value of employee wont get written over when you're looping over and using +=
+    teamArray.forEach(employee => {
         employeeHtml += `
                 <h1>${employee.role}</h1>
                 <div>
@@ -16,7 +16,6 @@ const makeHtml = (employeeArray) => {
     });
     writeToFile(employeeHtml);
 };
-
 
 const writeToFile = data => {
     return new Promise((resolve, reject) => {
