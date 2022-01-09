@@ -1,13 +1,14 @@
 const inquirer = require('inquirer');
 const Engineer = require('./lib/Engineer')
 const Intern = require('./lib/Intern')
-const Manager = require('./lib/Manager')
+const Manager = require('./lib/Manager');
+const makeHtml = require('./src/html-maker');
 
 const questions = [
     {
         type: 'text',
         name: 'name',
-        message: 'To begin enter the Employee\'s name.'
+        message: 'To begin, what is the Employee\'s name?'
     },
     {
         type: 'list',
@@ -18,7 +19,7 @@ const questions = [
     {
         type: 'input',
         name: 'id',
-        message: 'What Id Number would you like to give to the Employee?',
+        message: 'What ID NUMBER would you like to give to the Employee?',
 
         validate: idInput => {
 
@@ -34,13 +35,14 @@ const questions = [
     {
         type: 'input',
         name: 'email',
-        message: 'Enter the Employee\'s email'
+        message: 'What is the Employee\'s email?'
     }
 ];
 
 createEmployee = () => {
 
     let employeeArray = [];
+    let newEmployee;
 
     const askQuestions = () => {
 
@@ -48,15 +50,14 @@ createEmployee = () => {
             .then(data => {
 
                 if (data.role === 'Engineer') {
-                    let createdEngineer;
 
-                    createdEngineer = new Engineer(data.name, data.id, data.email, data.role);
+                    newEmployee = new Engineer(data.name, data.id, data.email, data.role, data.specificInfo);
 
                     inquirer
                         .prompt([
                             {
                                 type: 'text',
-                                name: 'github',
+                                name: 'specificInfo',
                                 message: 'What is your Github user?'
                             },
                             {
@@ -66,27 +67,27 @@ createEmployee = () => {
                                 default: false,
                             }
                         ])
-                        .then(data => {
+                        .then(employeeData => {
 
-                            employeeArray.push(createdEngineer);
-                            console.table(employeeArray);
+                            newEmployee.role = data.role
+                            newEmployee.specificInfo = employeeData.specificInfo;
+                            employeeArray.push(newEmployee);
 
-                            if (data.addEmployee) {
+                            if (employeeData.addEmployee) {
                                 askQuestions();
 
                             } else {
-                                return false;
+                                makeHtml(employeeArray);
                             };
                         })
                 } else if (data.role === 'Intern') {
-                    let createdIntern;
 
-                    createdIntern = new Intern(data.name, data.id, data.email, data.role);
+                    newEmployee = new Intern(data.name, data.id, data.email, data.role, data.specificInfo);
                     inquirer
                         .prompt([
                             {
                                 type: 'text',
-                                name: 'school',
+                                name: 'specificInfo',
                                 message: 'What school is the Intern going to?'
                             },
                             {
@@ -96,27 +97,27 @@ createEmployee = () => {
                                 default: false,
                             }
                         ])
-                        .then(data => {
+                        .then(employeeData => {
 
-                            employeeArray.push(createdIntern);
-                            console.table(employeeArray);
+                            newEmployee.role = data.role
+                            newEmployee.specificInfo = employeeData.specificInfo
+                            employeeArray.push(newEmployee);
 
-                            if (data.addEmployee) {
+                            if (employeeData.addEmployee) {
                                 askQuestions();
 
                             } else {
-                                return false;
+                                makeHtml(employeeArray);
                             };
                         })
                 } else if (data.role === 'Manager') {
-                    let createdManager;
 
-                    createdManager = new Manager(data.name, data.id, data.email, data.role)
+                    newEmployee = new Manager(data.name, data.id, data.email, data.role, data.specificInfo)
                     inquirer
                         .prompt([
                             {
                                 type: 'text',
-                                name: 'officeNum',
+                                name: 'specificInfo',
                                 message: 'What is the Manager\'s office number?'
                             },
                             {
@@ -126,27 +127,25 @@ createEmployee = () => {
                                 default: false,
                             }
                         ])
-                        .then(data => {
+                        .then(employeeData => {
 
-                            employeeArray.push(createdManager);
-                            console.table(employeeArray);
+                            newEmployee.role = data.role
+                            newEmployee.specificInfo = employeeData.specificInfo
+                            employeeArray.push(newEmployee);
 
-                            if (data.addEmployee) {
+                            if (employeeData.addEmployee) {
                                 askQuestions();
 
                             } else {
-                                return false;
+                                makeHtml(employeeArray);
                             };
-                            
-                        }) ;
+                        });
 
-                        console.table(employeeArray);
-                        
                 } else {
                     return false;
                 };
-                console.table(employeeArray);
-            });
+                console.table(employeeArray)
+            })
     }
     askQuestions();
 };
