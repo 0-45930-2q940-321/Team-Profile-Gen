@@ -25,7 +25,7 @@ Go into a terminal in a directory of the application and then enter this command
 ## Credits
 
 * [Youtube Video](www.youtube.com/watch?v=1AxFrY2oSiw)
-* SHOUT OUT TO [Lazy Lizard](https://github.com/LazyLizard95) always giving me revelations!
+* [Lazy Lizard](https://github.com/LazyLizard95) --Good tutor
 
 ---
 
